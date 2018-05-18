@@ -27,18 +27,22 @@
                             <table class="table table-hover">
                                 <thead class="thead-inverse">
                                     <tr>
-                                        <td>
+                                        <th>
                                             Id
-                                        </td>
-                                        <td>
+                                        </th>
+                                        <th>
                                             Description
-                                        </td>
+                                        </th>
+                                        <th>
+                                            View
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="recipe : ${recipes}">
                                         <td th:text="${recipe.id}">123</td>
                                         <td th:text="${recipe.description}">Description</td>
+                                        <td><a th:href="@{'/recipe/show/' + ${recipe.id}}">View</a></td>
                                     </tr>
                                 </tbody>
                             </table>
