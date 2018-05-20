@@ -1,5 +1,7 @@
 package guru.springframework.recipe.services;
 
+import guru.springframework.recipe.commands.RecipeCommand;
+import guru.springframework.recipe.conversors.*;
 import guru.springframework.recipe.domain.Recipe;
 import guru.springframework.recipe.repository.RecipeRepository;
 import org.junit.Before;
@@ -24,11 +26,15 @@ public class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+    private RecipeToRecipeCommand recipeToRecipeCommand;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
-        this.recipeService = new RecipeServiceImpl(this.recipeRepository);
+        recipeToRecipeCommand = new RecipeToRecipeCommand(new NotesToNotesCommand(), new CategoryToCategoryCommand(), new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand()));
+        this.recipeService = new RecipeServiceImpl(this.recipeRepository,
+                                    new RecipeCommandToRecipe(new NotesCommandToNotes(),new CategoryCommandToCategory(),new IngredientCommandToIngredient(new UnitOfMeasureCommandToUnitOfMeasure())),
+                recipeToRecipeCommand);
     }
 
 
@@ -57,5 +63,23 @@ public class RecipeServiceImplTest {
         assertNotNull(foundRecipe);
         verify(recipeRepository,times(1)).findById(anyLong());
         verify(recipeRepository,times(0)).findAll();
+    }
+
+    @Test
+    public void saveRecipe(){
+        //given:
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+        when(recipeRepository.save(recipe)).thenReturn(recipe);
+        RecipeCommand recipeCmdToSave = this.recipeToRecipeCommand.convert(recipe);
+
+        //when
+        RecipeCommand result = this.recipeService.saveRecipe(recipeCmdToSave);
+
+        //then
+        assertNotNull(result);
+        assertEquals(recipe.getId(), result.getId());
+        verify(recipeRepository,times(1)).save(recipe);
+
     }
 }
