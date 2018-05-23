@@ -82,4 +82,16 @@ public class RecipeServiceImplTest {
         verify(recipeRepository,times(1)).save(recipe);
 
     }
+
+    @Test
+    public void deleteRecipe(){
+        //Given
+        Long recipeId = 1L;
+
+        //when
+        this.recipeService.deleteById(recipeId);
+
+        //then
+        verify(this.recipeRepository,times(1)).deleteById(anyLong());
+    }
 }
