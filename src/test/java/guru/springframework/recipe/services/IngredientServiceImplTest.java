@@ -1,12 +1,14 @@
 package guru.springframework.recipe.services;
 
 import guru.springframework.recipe.commands.IngredientCommand;
+import guru.springframework.recipe.commands.UnitOfMeasureCommand;
 import guru.springframework.recipe.conversors.IngredientCommandToIngredient;
 import guru.springframework.recipe.conversors.IngredientToIngredientCommand;
 import guru.springframework.recipe.conversors.UnitOfMeasureCommandToUnitOfMeasure;
 import guru.springframework.recipe.conversors.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.recipe.domain.Ingredient;
 import guru.springframework.recipe.domain.Recipe;
+import guru.springframework.recipe.domain.UnitOfMeasure;
 import guru.springframework.recipe.repository.RecipeRepository;
 import guru.springframework.recipe.repository.UnitOfMeasureRepository;
 import org.junit.Before;
@@ -14,6 +16,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -33,11 +36,14 @@ public class IngredientServiceImplTest {
     UnitOfMeasureRepository unitOfMeasureRepository;
 
     IngredientService ingredientService;
+    private UnitOfMeasureToUnitOfMeasureCommand uomToUomCommand;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        this.ingredientService = new IngredientServiceImpl(new IngredientToIngredientCommand(new
-                UnitOfMeasureToUnitOfMeasureCommand()), new IngredientCommandToIngredient(new
+        uomToUomCommand = new
+                UnitOfMeasureToUnitOfMeasureCommand();
+        this.ingredientService = new IngredientServiceImpl(new IngredientToIngredientCommand(uomToUomCommand), new IngredientCommandToIngredient(new
                 UnitOfMeasureCommandToUnitOfMeasure()), recipeRepository, unitOfMeasureRepository);
     }
 
@@ -96,6 +102,46 @@ public class IngredientServiceImplTest {
         //then
         assertNotNull(savedCommand);
         assertEquals(Long.valueOf(3L), savedCommand.getId());
+        verify(recipeRepository,times(1)).findById(anyLong());
+        verify(recipeRepository,times(1)).save(any(Recipe.class));
+
+    }
+
+    @Test
+    public void testSaveNewIngredient(){
+        //given:
+        UnitOfMeasureCommand uomCommand = new UnitOfMeasureCommand();
+        uomCommand.setId(5L);
+        IngredientCommand command = new IngredientCommand();
+        command.setRecipeId(2L);
+        command.setUom(uomCommand);
+        command.setAmount(new BigDecimal(2));
+        command.setDescription("new ingredient");
+
+        Optional<Recipe> recipeOptional = Optional.of(new Recipe());
+
+        Recipe savedRecipe = new Recipe();
+        savedRecipe.setId(2L);
+        Ingredient createdIngredient = new Ingredient();
+        createdIngredient.setId(0L);
+        UnitOfMeasure uom2 = new UnitOfMeasure();
+        uom2.setId(5L);
+        createdIngredient.setUom(uom2);
+        createdIngredient.setAmount(new BigDecimal(2));
+        createdIngredient.setDescription("new ingredient");
+        savedRecipe.addIngredient(createdIngredient);
+
+        when(this.recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+        when(this.recipeRepository.save(any())).thenReturn(savedRecipe);
+
+        //when
+        IngredientCommand savedCommand = this.ingredientService.saveIngredientCommand(command);
+
+        //then
+        assertNotNull(savedCommand);
+        assertEquals("new ingredient", savedCommand.getDescription());
+        assertEquals(new Long(2), savedCommand.getRecipeId());
+
         verify(recipeRepository,times(1)).findById(anyLong());
         verify(recipeRepository,times(1)).save(any(Recipe.class));
 

@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -70,7 +71,7 @@ public class RecipeServiceImplTest {
         //given:
         Recipe recipe = new Recipe();
         recipe.setId(1L);
-        when(recipeRepository.save(recipe)).thenReturn(recipe);
+        when(recipeRepository.save(any(Recipe.class))).thenReturn(recipe);
         RecipeCommand recipeCmdToSave = this.recipeToRecipeCommand.convert(recipe);
 
         //when
@@ -79,7 +80,7 @@ public class RecipeServiceImplTest {
         //then
         assertNotNull(result);
         assertEquals(recipe.getId(), result.getId());
-        verify(recipeRepository,times(1)).save(recipe);
+        verify(recipeRepository,times(1)).save(any(Recipe.class));
 
     }
 
