@@ -3,11 +3,13 @@ package guru.springframework.recipe.services;
 import guru.springframework.recipe.commands.UnitOfMeasureCommand;
 import guru.springframework.recipe.conversors.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.recipe.repository.UnitOfMeasureRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Service
 public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
     private UnitOfMeasureToUnitOfMeasureCommand converter;
