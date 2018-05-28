@@ -1,5 +1,6 @@
 package guru.springframework.recipe.services;
 
+import guru.springframework.recipe.commands.RecipeCommand;
 import guru.springframework.recipe.domain.Recipe;
 import guru.springframework.recipe.repository.RecipeRepository;
 import org.junit.Before;
@@ -52,6 +53,5 @@ public class ImageServiceImplTest {
         verify(this.recipeRepository,times(1)).save(argumentCaptor.capture());
         Recipe savedRecipe = argumentCaptor.getValue();
         assertEquals(multipartFile.getBytes().length,savedRecipe.getImage().length);
-
     }
 }
