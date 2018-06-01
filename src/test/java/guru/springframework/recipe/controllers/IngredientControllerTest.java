@@ -38,11 +38,13 @@ public class IngredientControllerTest {
 
     @Mock
     UnitOfMeasureService uomService;
+    private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         this.controller = new IngredientController(this.recipeService, this.ingredientService, this.uomService);
+        mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
     }
 
     @Test
@@ -51,7 +53,6 @@ public class IngredientControllerTest {
         RecipeCommand recipe = new RecipeCommand();
         when(this.recipeService.findRecipeCommandById(anyLong())).thenReturn(recipe);
         //when:
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
         mockMvc.perform(get("/recipe/1/ingredients"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/list"))
@@ -67,7 +68,6 @@ public class IngredientControllerTest {
         when(this.ingredientService.findByRecipeIdAndIngredientId(anyLong(),anyLong())).thenReturn(ingredient);
 
         //when:
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
         mockMvc.perform(get("/recipe/1/ingredient/1/show"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/show"))
@@ -83,7 +83,6 @@ public class IngredientControllerTest {
         when(this.ingredientService.findByRecipeIdAndIngredientId(anyLong(),anyLong())).thenReturn(ingredient);
         when(this.uomService.listAllUoms()).thenReturn(new HashSet<>());
         //when:
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
         mockMvc.perform(get("/recipe/1/ingredient/1/update"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/ingredientform"))
@@ -103,7 +102,6 @@ public class IngredientControllerTest {
         when(this.ingredientService.findByRecipeIdAndIngredientId(anyLong(),anyLong())).thenReturn(ingredient);
         when(this.uomService.listAllUoms()).thenReturn(new HashSet<>());
         //when:
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
         mockMvc.perform(get("/recipe/1/ingredient/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/ingredient/ingredientform"))
@@ -125,7 +123,6 @@ public class IngredientControllerTest {
         when(this.ingredientService.saveIngredientCommand(any())).thenReturn(ingredientCommand);
 
         //then
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
         mockMvc.perform(post("/recipe/2/ingredient")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("id","")
@@ -135,7 +132,6 @@ public class IngredientControllerTest {
 
     @Test
     public void testDeleteIngredient() throws Exception {
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.controller).build();
         mockMvc.perform(get("/recipe/2/ingredient/3/delete")
                 ).andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/recipe/2/ingredients"));

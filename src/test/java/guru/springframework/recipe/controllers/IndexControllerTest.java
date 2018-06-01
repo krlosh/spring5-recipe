@@ -34,17 +34,18 @@ public class IndexControllerTest {
 
     @Mock
     Model model;
+    private MockMvc mockMvc;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         this.indexController = new IndexController(this.recipeService);
+        mockMvc = MockMvcBuilders.standaloneSetup(this.indexController).build();
     }
 
     @Test
     public void testMockMvc() throws Exception {
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(this.indexController).build();
         mockMvc.perform(MockMvcRequestBuilders.get("/")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.view().name("index"));
     }
 
