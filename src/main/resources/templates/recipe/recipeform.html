@@ -35,7 +35,7 @@
                             <div class="row">
                                 <div class="col-md-3 form-group" th:class="${#fields.hasErrors('description')}?
                                 'col-md-3 form-group has-error':'col-md-3 form-group'">
-                                    <label>Recipe description:</label>
+                                    <label th:text="#{recipe.description}">Recipe description:</label>
                                     <input type="text" th:field="*{description}" class="form-control" th:errorClass="has-error"/>
                                     <span class="help-block" th:if="${#fields.hasErrors('description')}">
                                         <ul>
