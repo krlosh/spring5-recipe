@@ -115,7 +115,7 @@
                                 <ul>
                                     <!--/*@thymesVar id="ingredient" type="guru.springframework.domain.Ingredient"*/-->
                                     <li th:each="ingredient:${recipe.getIngredients()}"
-                                        th:text="@{ ${ingredient.amount}+${ingredient.uom.description} + ${ingredient.description}}" >1 Cup of milk</li>
+                                        th:text="guacamole400x400WithX.jpg@{ ${ingredient.amount}+${ingredient.uom.description} + ${ingredient.description}}" >1 Cup of milk</li>
                                     <li th:remove="all">1 Teaspoon of chocolate</li>
                                     <li th:remove="all">1 Teaspoon of Sugar</li>
                                 </ul>
